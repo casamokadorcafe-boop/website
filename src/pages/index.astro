@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Gallery from '../components/Gallery.astro';
+import Menu from '../components/Menu.astro';
+import Shisha from '../components/Shisha.astro';
+import About from '../components/About.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="Casa Mokador — Italian Café & Bar in Pafos"
+  description="Italian coffee culture in Pafos, Cyprus. Three single-origin beans roasted by Mokador in Italy, poured the way it’s meant to be — at the bar, in the sun, or unwound over an e-hookah."
+  canonical="/"
+>
+  <Nav />
+  <main id="main">
+    <Hero />
+    <Gallery />
+    <Menu />
+    <Shisha />
+    <About />
+    <Contact />
+  </main>
+  <Footer />
+</Base>

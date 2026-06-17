@@ -1,0 +1,493 @@
+---
+/**
+ * Top navigation.
+ *  - Transparent over the hero, semi-opaque + blurred after ~50px scroll.
+ *  - CM monogram on the left appears once the hero scrolls past.
+ *  - Mobile (<lg): hamburger → full-screen overlay with focus trap + Esc to close.
+ */
+
+const items = [
+  { href: '#gallery', label: 'Gallery' },
+  { href: '#menu', label: 'Menu' },
+  { href: '#shisha', label: 'E-Hookah' },
+  { href: '#about', label: 'About' },
+  { href: '#contact', label: 'Contact' },
+];
+---
+
+<header id="mk-nav" class="mk-nav" data-state="top">
+  <div class="mk-nav__inner mk-container">
+
+    <a href="#home" class="mk-nav__logo" aria-label="Casa Mokador — back to top">
+      <picture class="mk-nav__logo-mark-img">
+        <source srcset="/brand/monogram-transparent.webp" type="image/webp" />
+        <img src="/brand/monogram-transparent.png" alt="" width="256" height="218" decoding="async" />
+      </picture>
+      <span class="mk-nav__logo-text">
+        <span class="mk-nav__logo-mark">Casa Mokador</span>
+        <span class="mk-nav__logo-sub">Café · Bar</span>
+      </span>
+    </a>
+
+    <nav class="mk-nav__items" aria-label="Primary">
+      <ul>
+        {items.map((item) => (
+          <li>
+            <a href={item.href} class="mk-nav__link">
+              <span>{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <button
+      id="mk-menu-toggle"
+      class="mk-nav__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mk-mobile-menu"
+      aria-label="Open menu"
+    >
+      <span class="mk-nav__toggle-bar" aria-hidden="true"></span>
+      <span class="mk-nav__toggle-bar" aria-hidden="true"></span>
+      <span class="mk-nav__toggle-bar" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <span class="mk-nav__underline" aria-hidden="true"></span>
+</header>
+
+<!-- Mobile overlay (always rendered, hidden until toggled) -->
+<div
+  id="mk-mobile-menu"
+  class="mk-mobile"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Site menu"
+>
+  <div class="mk-mobile__inner">
+    <nav aria-label="Primary mobile">
+      <ul class="mk-mobile__list">
+        {items.map((item, i) => (
+          <li style={`--i:${i}`}>
+            <a href={item.href} class="mk-mobile__link" data-mk-close>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="mk-mobile__foot">
+      <span class="mk-flag mk-eyebrow">Pafos · Cyprus</span>
+      <div class="mk-mobile__social" aria-label="Social media">
+        {/* TODO: replace # with real handles once confirmed */}
+        <a href="#" aria-label="Instagram" rel="noopener noreferrer me">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="0.9" fill="currentColor"/>
+          </svg>
+        </a>
+        <a href="#" aria-label="Facebook" rel="noopener noreferrer me">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M14 8h2V5h-2.4C12 5 11 6 11 8v2H9v3h2v8h3v-8h2.2L17 10h-3V8.5C14 8.2 14 8 14 8z"/>
+          </svg>
+        </a>
+        <a href="#" aria-label="TikTok" rel="noopener noreferrer me">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M14 4v9.5a3.5 3.5 0 1 1-3.5-3.5"/>
+            <path d="M14 4c0 2 1.5 4 4 4"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mk-nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    pointer-events: none;
+    transition: background-color 320ms var(--ease-mk), backdrop-filter 320ms var(--ease-mk);
+    background-color: transparent;
+  }
+  .mk-nav__inner {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 72px;
+    padding-block: 0.875rem;
+  }
+  .mk-nav[data-state="scrolled"] {
+    background-color: color-mix(in oklab, var(--color-mk-black) 78%, transparent);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+  }
+  .mk-nav__underline {
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      color-mix(in oklab, var(--color-mk-gold) 50%, transparent) 50%,
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 320ms var(--ease-mk);
+  }
+  .mk-nav[data-state="scrolled"] .mk-nav__underline {
+    opacity: 1;
+  }
+
+  /* Logo lockup — hidden over hero, slides in once scrolled past */
+  .mk-nav__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: opacity 360ms var(--ease-mk), transform 360ms var(--ease-mk);
+    pointer-events: auto;
+    min-height: 44px;
+  }
+  .mk-nav[data-state="scrolled"] .mk-nav__logo {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .mk-nav__logo-mark-img {
+    display: block;
+    width: 42px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+  .mk-nav__logo-mark-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .mk-nav__logo-text {
+    display: none;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .mk-nav__logo-mark {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--color-mk-cream);
+    letter-spacing: 0.04em;
+    font-size: 14px;
+  }
+  .mk-nav__logo-sub {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--color-mk-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 10px;
+    margin-top: 0.25em;
+  }
+  @media (min-width: 640px) {
+    .mk-nav__logo-text { display: flex; }
+  }
+
+  /* Desktop nav items */
+  .mk-nav__items { display: none; }
+  .mk-nav__items ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: clamp(1.5rem, 3vw, 2.75rem);
+  }
+  .mk-nav__link {
+    position: relative;
+    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: clamp(14px, 1vw, 15px);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-mk-cream);
+    padding: 0.75rem 0;
+    display: inline-block;
+    min-height: 44px;
+    line-height: calc(44px - 1.5rem);
+    transition: color 200ms var(--ease-mk);
+  }
+  .mk-nav__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.5rem;
+    height: 1px;
+    background: var(--color-mk-gold-light);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 250ms var(--ease-mk);
+  }
+  .mk-nav__link:hover,
+  .mk-nav__link:focus-visible {
+    color: var(--color-mk-gold-light);
+  }
+  .mk-nav__link:hover::after,
+  .mk-nav__link:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  @media (min-width: 1024px) {
+    .mk-nav__items { display: block; }
+  }
+
+  /* Hamburger toggle */
+  .mk-nav__toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    pointer-events: auto;
+  }
+  .mk-nav__toggle-bar {
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--color-mk-cream);
+    transition: transform 320ms var(--ease-mk), opacity 200ms var(--ease-mk), background-color 200ms var(--ease-mk);
+  }
+  .mk-nav__toggle:hover .mk-nav__toggle-bar {
+    background: var(--color-mk-gold);
+  }
+  /* When open: morph into an X */
+  .mk-nav__toggle[aria-expanded="true"] .mk-nav__toggle-bar:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+  }
+  .mk-nav__toggle[aria-expanded="true"] .mk-nav__toggle-bar:nth-child(2) {
+    opacity: 0;
+  }
+  .mk-nav__toggle[aria-expanded="true"] .mk-nav__toggle-bar:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+  }
+  @media (min-width: 1024px) {
+    .mk-nav__toggle { display: none; }
+  }
+
+  /* Mobile full-screen overlay */
+  .mk-mobile {
+    position: fixed;
+    inset: 0;
+    z-index: 49;
+    background: color-mix(in oklab, var(--color-mk-black) 96%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 320ms var(--ease-mk), visibility 0s linear 320ms;
+  }
+  .mk-mobile[data-open="true"] {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 320ms var(--ease-mk), visibility 0s linear 0s;
+  }
+  .mk-mobile__inner {
+    height: 100%;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: clamp(2rem, 8vh, 5rem) 1.5rem;
+    gap: 2rem;
+  }
+  .mk-mobile__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 2vh, 1.25rem);
+    text-align: center;
+  }
+  .mk-mobile__list li {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 420ms var(--ease-mk), transform 420ms var(--ease-mk);
+    transition-delay: calc(var(--i, 0) * 60ms + 120ms);
+  }
+  .mk-mobile[data-open="true"] .mk-mobile__list li {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .mk-mobile__link {
+    display: inline-block;
+    font-family: "Inter", "Helvetica Neue", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: clamp(14px, 1vw, 15px);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-mk-cream);
+    padding: 0.875rem 1rem;
+    min-height: 44px;
+    position: relative;
+    transition: color 200ms var(--ease-mk);
+  }
+  .mk-mobile__link::after {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0.375rem;
+    height: 1px;
+    background: var(--color-mk-gold-light);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 250ms var(--ease-mk);
+  }
+  .mk-mobile__link:hover,
+  .mk-mobile__link:focus-visible {
+    color: var(--color-mk-gold-light);
+  }
+  .mk-mobile__link:hover::after,
+  .mk-mobile__link:focus-visible::after {
+    transform: scaleX(1);
+  }
+  .mk-mobile__foot {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    transition: opacity 420ms var(--ease-mk);
+    transition-delay: 400ms;
+  }
+  .mk-mobile[data-open="true"] .mk-mobile__foot { opacity: 1; }
+  .mk-mobile__social {
+    display: flex;
+    gap: 1.25rem;
+  }
+  .mk-mobile__social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    color: var(--color-mk-cream-mute);
+    transition: color 240ms var(--ease-mk);
+  }
+  .mk-mobile__social a:hover {
+    color: var(--color-mk-gold);
+  }
+
+  /* Hide nav itself when mobile menu is open (the toggle stays via z-index) */
+  body[data-menu-open="true"] {
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  const nav = document.getElementById('mk-nav') as HTMLElement | null;
+  const toggle = document.getElementById('mk-menu-toggle') as HTMLButtonElement | null;
+  const overlay = document.getElementById('mk-mobile-menu') as HTMLElement | null;
+
+  // --- Scroll state -----------------------------------------------------
+  if (nav) {
+    const SCROLL_THRESHOLD = 60;
+    let ticking = false;
+    const update = () => {
+      const scrolled = window.scrollY > SCROLL_THRESHOLD;
+      nav.dataset.state = scrolled ? 'scrolled' : 'top';
+      ticking = false;
+    };
+    update();
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+  }
+
+  // --- Mobile menu ------------------------------------------------------
+  if (toggle && overlay) {
+    let lastFocused: HTMLElement | null = null;
+
+    const open = () => {
+      lastFocused = document.activeElement as HTMLElement;
+      overlay.setAttribute('data-open', 'true');
+      overlay.setAttribute('aria-hidden', 'false');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close menu');
+      document.body.setAttribute('data-menu-open', 'true');
+      // Focus first link
+      const firstLink = overlay.querySelector<HTMLElement>('a, button');
+      if (firstLink) setTimeout(() => firstLink.focus(), 280);
+    };
+
+    const close = () => {
+      overlay.removeAttribute('data-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+      document.body.removeAttribute('data-menu-open');
+      if (lastFocused) lastFocused.focus();
+    };
+
+    toggle.addEventListener('click', () => {
+      if (overlay.getAttribute('data-open') === 'true') close();
+      else open();
+    });
+
+    // Close on any link click
+    overlay.querySelectorAll<HTMLAnchorElement>('[data-mk-close]').forEach((a) => {
+      a.addEventListener('click', () => close());
+    });
+
+    // Esc + simple focus trap
+    document.addEventListener('keydown', (e) => {
+      if (overlay.getAttribute('data-open') !== 'true') return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const focusable = overlay.querySelectorAll<HTMLElement>(
+          'a[href], button, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    // Close on resize up to desktop
+    const mq = window.matchMedia('(min-width: 1024px)');
+    mq.addEventListener('change', (e) => {
+      if (e.matches && overlay.getAttribute('data-open') === 'true') close();
+    });
+  }
+</script>

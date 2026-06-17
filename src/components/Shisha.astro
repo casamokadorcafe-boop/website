@@ -1,0 +1,342 @@
+---
+/**
+ * Shisha & E-Hookah — featured offering, editorial layout.
+ *
+ *  - Desktop (≥1024px): asymmetric 55/45 grid — copy on the left, image
+ *    cluster on the right.
+ *  - Mobile: copy stacks above images.
+ *  - Section background is --color-mk-black-soft for a slight lounge
+ *    mood shift from the rest of the page.
+ *  - Flavour menu sits below the editorial layout. Six placeholder rows;
+ *    structure looks finished even while empty.
+ */
+import { SHISHA, formatPrice } from '../data/menu';
+
+const IMAGES = [
+  {
+    src: '/shisha/ehookah.JPG',
+    alt: 'The lounge in low evening light, with warm amber tones',
+    variant: 'hero',
+  },
+  {
+    src: '/shisha/shisha-02.svg',
+    alt: 'A close-up of a sleek electronic hookah device',
+    variant: 'square',
+  },
+  {
+    src: '/shisha/shisha-03.svg',
+    alt: 'A close-up of a traditional e-hookah device',
+    variant: 'square',
+  },
+] as const;
+---
+
+<section id="shisha" class="mk-shisha" aria-label="E-Hookah">
+
+  <div class="mk-shisha__inner mk-container">
+
+    <div class="mk-shisha__layout">
+
+      <!-- COPY (~55%) -->
+      <div class="mk-shisha__copy">
+        <p class="mk-eyebrow mk-flag mk-reveal">After Dark</p>
+
+        <h2 class="mk-shisha__title font-display mk-reveal" style="--i:1">
+          <span class="mk-gold-metallic">E-Hookah</span>
+        </h2>
+
+        <p class="mk-shisha__subhead mk-reveal" style="--i:2">
+          Traditional · Electronic · Modern
+        </p>
+
+        <span class="mk-rule mk-reveal" style="--i:3" aria-hidden="true"></span>
+
+        <div class="mk-shisha__prose">
+          <p class="mk-reveal" style="--i:4">
+            Casa Mokador offers <em>both worlds</em>. The ritual of traditional
+            e-hookah, and the cleaner, <em>charcoal-free</em> experience of
+            electronic hookah — a battery-powered heating system that
+            vaporises flavour without combustion. Smoother draws, no smoke,
+            no setup, and easy flavour changes mid-session.
+          </p>
+          <p class="mk-reveal" style="--i:5">
+            Unwind in the lounge, choose your flavour, and <em>let the evening
+            slow down</em>.
+          </p>
+        </div>
+      </div>
+
+      <!-- IMAGE CLUSTER (~45%) -->
+      <div class="mk-shisha__cluster mk-reveal" style="--i:3">
+        {IMAGES.map((img) => (
+          <figure class={`mk-shisha__tile mk-shisha__tile--${img.variant}`}>
+            <img
+              src={img.src}
+              alt={img.alt}
+              loading="lazy"
+              decoding="async"
+              width={800}
+              height={img.variant === 'hero' ? 1000 : 800}
+            />
+          </figure>
+        ))}
+      </div>
+
+    </div>
+
+    <!-- FLAVOURS -->
+    <section class="mk-shisha__flavours mk-reveal" style="--i:6" aria-labelledby="shisha-flavours-heading">
+
+      <header class="mk-shisha__flavours-head">
+        <p class="mk-eyebrow">Flavours</p>
+        <h3 id="shisha-flavours-heading" class="mk-shisha__flavours-title">
+          <span class="mk-gold-metallic">A short list</span>
+          <span class="mk-shisha__flavours-title-it">— more to follow.</span>
+        </h3>
+        <span class="mk-rule" aria-hidden="true"></span>
+      </header>
+
+      <ul class="mk-shisha__items">
+        {SHISHA.items.map((item) => (
+          <li>
+            <div class="mk-row">
+              <span class="mk-row__name">
+                {item.name}
+                {item.note && <span class="mk-shisha__note">— {item.note}</span>}
+              </span>
+              <span class="mk-row__leader" aria-hidden="true"></span>
+              <span class="mk-row__price">{formatPrice(item.price)}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+    </section>
+
+  </div>
+
+</section>
+
+<style>
+  .mk-shisha {
+    background: var(--color-mk-black-soft);
+    padding-block: clamp(5rem, 12vh, 9rem);
+    position: relative;
+    isolation: isolate;
+    /* Soft band transition into and out of soft-black */
+    box-shadow:
+      0 -1px 0 color-mix(in oklab, var(--color-mk-gold) 6%, transparent) inset,
+      0  1px 0 color-mix(in oklab, var(--color-mk-gold) 6%, transparent) inset;
+  }
+
+  .mk-shisha__inner {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 7vh, 5rem);
+  }
+
+  /* ---------- Editorial layout: copy + cluster ---------- */
+  .mk-shisha__layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2.5rem, 5vh, 3.5rem);
+  }
+  @media (min-width: 1024px) {
+    .mk-shisha__layout {
+      grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+      align-items: start;
+      gap: clamp(2.5rem, 4vw, 4.5rem);
+    }
+  }
+
+  /* ---------- Copy column ---------- */
+  .mk-shisha__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.125rem;
+    max-width: 60ch;
+  }
+  .mk-shisha__title {
+    font-size: clamp(2.25rem, 5.5vw, 3.75rem);
+    line-height: 1.05;
+    letter-spacing: 0.005em;
+    margin: 0;
+  }
+  .mk-shisha__subhead {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 12px;
+    color: var(--color-mk-cream);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .mk-shisha__prose {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+  .mk-shisha__prose p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--color-mk-cream);
+    font-size: 17px;
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  .mk-shisha__prose em {
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-mk-gold);
+    letter-spacing: 0;
+  }
+
+  /* ---------- Image cluster ---------- */
+  .mk-shisha__cluster {
+    display: grid;
+    gap: clamp(0.625rem, 1vw, 0.875rem);
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    /* Mobile: hero spans both columns, close-ups sit in 2-up below. */
+  }
+  @media (min-width: 1024px) {
+    .mk-shisha__cluster {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      /* Desktop: hero on the left taking full height,
+         two square close-ups stacked on the right. */
+    }
+  }
+
+  .mk-shisha__tile {
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid color-mix(in oklab, var(--color-mk-gold) 10%, transparent);
+    background: var(--color-mk-black);
+    transition:
+      border-color 360ms var(--ease-mk),
+      box-shadow 360ms var(--ease-mk);
+    box-shadow: 0 14px 30px -22px rgba(0,0,0,0.7);
+  }
+  .mk-shisha__tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.02);
+    transition: transform 600ms var(--ease-mk);
+    display: block;
+  }
+  .mk-shisha__tile:hover,
+  .mk-shisha__tile:focus-within {
+    border-color: color-mix(in oklab, var(--color-mk-gold-light) 60%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-mk-gold-light) 30%, transparent),
+      0 20px 40px -24px rgba(0,0,0,0.8);
+  }
+  .mk-shisha__tile:hover img {
+    transform: scale(1.05);
+  }
+
+  /* Tile variants. Mobile: hero spans both columns, others size by aspect. */
+  .mk-shisha__tile--hero {
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 5;
+  }
+  .mk-shisha__tile--square {
+    aspect-ratio: 1 / 1;
+  }
+  /* Optional 4th wide tile spans the full cluster width on every breakpoint */
+  .mk-shisha__tile--wide {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 9;
+  }
+  @media (min-width: 1024px) {
+    .mk-shisha__tile--hero {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 520px;
+    }
+    .mk-shisha__tile--square:nth-of-type(2) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .mk-shisha__tile--square:nth-of-type(3) {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    /* When a 4th wide tile is present, it sits on row 3 spanning both columns */
+    .mk-shisha__tile--wide {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+  }
+
+  /* ---------- Flavours ---------- */
+  .mk-shisha__flavours {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 3.5vh, 2.25rem);
+    padding-top: clamp(2rem, 5vh, 3.5rem);
+    border-top: 1px solid color-mix(in oklab, var(--color-mk-cream-dim) 18%, transparent);
+  }
+  .mk-shisha__flavours-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .mk-shisha__flavours-title {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.2;
+    letter-spacing: 0.005em;
+    margin: 0;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0 0.4em;
+    color: var(--color-mk-cream);
+  }
+  .mk-shisha__flavours-title-it {
+    font-weight: 400;
+    font-style: italic;
+    color: var(--color-mk-cream-mute);
+  }
+
+  .mk-shisha__items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .mk-shisha__items li {
+    border-bottom: 1px solid color-mix(in oklab, var(--color-mk-cream-dim) 18%, transparent);
+  }
+  .mk-shisha__items li:first-child {
+    border-top: 1px solid color-mix(in oklab, var(--color-mk-cream-dim) 18%, transparent);
+  }
+  @media (min-width: 768px) {
+    .mk-shisha__items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2rem, 5vw, 4rem);
+    }
+  }
+
+  .mk-shisha__note {
+    font-family: var(--font-sans);
+    font-style: italic;
+    color: var(--color-mk-cream-dim);
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+    letter-spacing: 0.02em;
+  }
+</style>

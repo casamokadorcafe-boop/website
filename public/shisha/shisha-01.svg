@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Placeholder — lounge atmosphere in low evening light">
+  <defs>
+    <radialGradient id="g1" cx="0.5" cy="0.78" r="0.7">
+      <stop offset="0%" stop-color="#3A2410"/>
+      <stop offset="55%" stop-color="#1B1410"/>
+      <stop offset="100%" stop-color="#0A0908"/>
+    </radialGradient>
+    <linearGradient id="numeral1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8C6E2A"/>
+      <stop offset="50%" stop-color="#C9A24B"/>
+      <stop offset="100%" stop-color="#8C6E2A"/>
+    </linearGradient>
+    <filter id="n1"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.86  0 0 0 0 0.69  0 0 0 0 0.39  0 0 0 0.07 0"/></filter>
+  </defs>
+
+  <rect width="800" height="1000" fill="url(#g1)"/>
+  <rect width="800" height="1000" filter="url(#n1)" opacity="0.5"/>
+
+  <!-- Faint horizon line, suggesting a room edge -->
+  <line x1="0" y1="660" x2="800" y2="660" stroke="#C9A24B" stroke-width="0.6" opacity="0.16"/>
+
+  <!-- Two soft smoke wisps -->
+  <path d="M 240 540 Q 380 460 540 540" stroke="#E6C97A" fill="none" stroke-width="60" opacity="0.05" stroke-linecap="round"/>
+  <path d="M 320 600 Q 460 530 600 620" stroke="#E6C97A" fill="none" stroke-width="40" opacity="0.045" stroke-linecap="round"/>
+
+  <!-- Numeral -->
+  <text x="400" y="560" text-anchor="middle"
+        font-family="Marcellus, 'Cormorant Garamond', serif" font-style="italic"
+        font-size="360" fill="url(#numeral1)" opacity="0.4" letter-spacing="-8">01</text>
+
+  <!-- Caption -->
+  <g transform="translate(60, 920)">
+    <line x1="0" y1="0" x2="36" y2="0" stroke="#C9A24B" stroke-width="1"/>
+    <text x="48" y="6" font-family="Italiana, serif" font-size="20" letter-spacing="3" fill="#F4ECDA">PLACEHOLDER · SHISHA 01</text>
+  </g>
+
+  <text x="740" y="60" text-anchor="end" font-family="Marcellus, serif" font-style="italic" font-size="32" fill="#C9A24B" opacity="0.7" letter-spacing="-1">CM</text>
+</svg>

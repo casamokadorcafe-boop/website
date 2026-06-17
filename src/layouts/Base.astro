@@ -1,0 +1,179 @@
+---
+/**
+ * Base layout — owns <html>, <head>, fonts, SEO, JSON-LD, body shell.
+ * All pages render through this.
+ */
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path-only canonical, e.g. "/". Joined to site origin. */
+  canonical?: string;
+}
+
+const {
+  title = 'Casa Mokador — Italian Café & Bar in Pafos',
+  description = 'Italian coffee culture in Pafos, Cyprus. Three single-origin beans roasted by Mokador in Italy, poured the way it’s meant to be — at the bar, in the sun, or unwound over an e-hookah.',
+  canonical = '/',
+} = Astro.props;
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://casamokador.cy';
+const canonicalUrl = `${siteUrl}${canonical}`;
+const ogImage = `${siteUrl}/brand/og-image.png`;
+
+// JSON-LD Restaurant schema — placeholder values marked clearly.
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'CafeOrCoffeeShop',
+  name: 'Casa Mokador',
+  alternateName: 'Casa Mokador Café & Bar',
+  description,
+  url: siteUrl,
+  image: ogImage,
+  servesCuisine: ['Italian', 'Coffee', 'Mediterranean'],
+  priceRange: '€',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Pafos',
+    addressCountry: 'CY',
+    // TODO: client to supply street + postal code
+    streetAddress: 'TBD',
+    postalCode: 'TBD',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    // Pafos centre — replace with exact coordinates when confirmed
+    latitude: 34.7720,
+    longitude: 32.4297,
+  },
+  // TODO: client to supply opening hours
+  openingHoursSpecification: [],
+  // TODO: client to supply telephone
+  telephone: 'TBD',
+  sameAs: [
+    // TODO: client to confirm social profiles
+    // 'https://instagram.com/casamokador',
+    // 'https://facebook.com/casamokador',
+    // 'https://tiktok.com/@casamokador',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" data-theme="mokador">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#0A0A0A" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/favicon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/brand/favicon-512.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicon-180.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="restaurant.restaurant" />
+    <meta property="og:site_name" content="Casa Mokador" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Casa Mokador — Italian café & bar in Pafos" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Performance hints — preconnect dropped: fonts are self-hosted -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(ld)} />
+
+    <!-- No-FOUC: set a class so first-paint can hide reveal targets only if JS will animate them. -->
+    <script is:inline>
+      document.documentElement.classList.add('mk-js');
+    </script>
+  </head>
+  <body>
+    <a href="#main" class="mk-skip-link">Skip to main content</a>
+    <slot />
+
+    <!-- Global scroll-reveal — tiny IntersectionObserver, no library.
+         Only activates if .mk-js is present (JS available). Otherwise content shows by default
+         because the .mk-reveal rule is overridden by .no-js fallback (see CSS). -->
+    <script>
+      // Run after first paint to avoid blocking
+      const startObserver = () => {
+        const els = document.querySelectorAll<HTMLElement>('.mk-reveal');
+        if (!('IntersectionObserver' in window) || els.length === 0) {
+          els.forEach((el) => el.classList.add('is-in'));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-in');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+        );
+        els.forEach((el) => io.observe(el));
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startObserver);
+      } else {
+        startObserver();
+      }
+    </script>
+
+    <style is:global>
+      /* No-JS fallback: if the script never adds .mk-js (it always will if JS runs),
+         we still show all reveal targets so the page is never blank. Safety net. */
+      html:not(.mk-js) .mk-reveal {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      /* Skip link */
+      .mk-skip-link {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -120%);
+        padding: 0.5rem 1rem;
+        background: var(--color-mk-gold);
+        color: var(--color-mk-black);
+        font-family: var(--font-caps);
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        font-size: 0.75rem;
+        z-index: 1000;
+        transition: transform 200ms var(--ease-mk);
+      }
+      .mk-skip-link:focus-visible {
+        transform: translate(-50%, 1rem);
+      }
+    </style>
+  </body>
+</html>

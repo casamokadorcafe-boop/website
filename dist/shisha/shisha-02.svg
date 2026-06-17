@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Placeholder — close-up of a sleek electronic hookah device">
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#16161A"/>
+      <stop offset="100%" stop-color="#0A0908"/>
+    </linearGradient>
+    <linearGradient id="device2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1F1F23"/>
+      <stop offset="50%" stop-color="#2A2A2E"/>
+      <stop offset="100%" stop-color="#161618"/>
+    </linearGradient>
+    <linearGradient id="numeral2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8C6E2A"/>
+      <stop offset="50%" stop-color="#C9A24B"/>
+      <stop offset="100%" stop-color="#8C6E2A"/>
+    </linearGradient>
+    <radialGradient id="led2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#E6C97A" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#C9A24B" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#C9A24B" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="n2"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.86  0 0 0 0 0.69  0 0 0 0 0.39  0 0 0 0.05 0"/></filter>
+  </defs>
+
+  <rect width="800" height="800" fill="url(#g2)"/>
+  <rect width="800" height="800" filter="url(#n2)" opacity="0.45"/>
+
+  <!-- Sleek vertical device silhouette (stylized) -->
+  <g transform="translate(400, 400)">
+    <rect x="-26" y="-260" width="52" height="520" rx="26" fill="url(#device2)" opacity="0.92"/>
+    <!-- mouthpiece -->
+    <rect x="-16" y="-300" width="32" height="50" rx="6" fill="#2A2A2E" opacity="0.92"/>
+    <!-- LED glow -->
+    <circle cx="0" cy="-200" r="36" fill="url(#led2)"/>
+    <circle cx="0" cy="-200" r="4" fill="#E6C97A"/>
+    <!-- chamber highlight -->
+    <ellipse cx="0" cy="180" rx="18" ry="60" fill="#E6C97A" opacity="0.08"/>
+  </g>
+
+  <!-- Numeral -->
+  <text x="400" y="540" text-anchor="middle"
+        font-family="Marcellus, 'Cormorant Garamond', serif" font-style="italic"
+        font-size="280" fill="url(#numeral2)" opacity="0.18" letter-spacing="-6">02</text>
+
+  <!-- Caption -->
+  <g transform="translate(48, 740)">
+    <line x1="0" y1="0" x2="32" y2="0" stroke="#C9A24B" stroke-width="1"/>
+    <text x="42" y="6" font-family="Italiana, serif" font-size="18" letter-spacing="3" fill="#F4ECDA">PLACEHOLDER · SHISHA 02</text>
+  </g>
+
+  <text x="744" y="56" text-anchor="end" font-family="Marcellus, serif" font-style="italic" font-size="28" fill="#C9A24B" opacity="0.7" letter-spacing="-1">CM</text>
+</svg>

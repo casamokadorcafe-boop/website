@@ -1,0 +1,155 @@
+---
+/**
+ * Footer — final breath, brand mark, back-to-top link.
+ */
+const year = new Date().getFullYear();
+---
+
+<footer class="mk-footer" aria-label="Site footer">
+  <div class="mk-footer__inner mk-container">
+
+    <div class="mk-footer__brand">
+      <picture class="mk-footer__brand-img" aria-hidden="true">
+        <source srcset="/brand/monogram-transparent.webp" type="image/webp" />
+        <img src="/brand/monogram-transparent.png" alt="" width="256" height="218" decoding="async" loading="lazy" />
+      </picture>
+      <div>
+        <span class="mk-footer__mark">Casa Mokador</span>
+        <span class="mk-footer__sub">Café Bar · Pafos</span>
+      </div>
+    </div>
+
+    <p class="mk-footer__partner">
+      In partnership with <strong>Mokador</strong>, Italy.
+    </p>
+
+    <div class="mk-footer__meta">
+      <span>© {year} Casa Mokador</span>
+      <span class="mk-footer__credit">
+        Website by <a href="https://www.hexadev-web.com/" class="mk-footer__credit-link" rel="noopener noreferrer" target="_blank">HexaDev</a>
+      </span>
+      <a href="#home" class="mk-footer__top">
+        Back to top
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 15 L12 9 L18 15"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .mk-footer {
+    border-top: 1px solid color-mix(in oklab, var(--color-mk-gold) 14%, transparent);
+    padding-block: clamp(2rem, 5vh, 3rem);
+    margin-top: clamp(2rem, 4vh, 4rem);
+  }
+  .mk-footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: center;
+    text-align: center;
+  }
+  @media (min-width: 768px) {
+    .mk-footer__inner {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+  .mk-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .mk-footer__brand-img {
+    display: block;
+    width: 38px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+  .mk-footer__brand-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .mk-footer__brand > div {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .mk-footer__mark {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--color-mk-cream);
+    letter-spacing: 0.04em;
+    font-size: 14px;
+  }
+  .mk-footer__sub {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--color-mk-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 10px;
+    margin-top: 0.3em;
+  }
+  .mk-footer__partner {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-mk-cream-mute);
+    font-size: 14px;
+    letter-spacing: 0.005em;
+  }
+  .mk-footer__partner strong {
+    color: var(--color-mk-gold);
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: 0.02em;
+  }
+  .mk-footer__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 11px;
+    color: var(--color-mk-cream-mute);
+  }
+  @media (min-width: 768px) {
+    .mk-footer__meta { align-items: flex-end; }
+  }
+  .mk-footer__credit {
+    font-size: 11px;
+    color: color-mix(in oklab, var(--color-mk-cream-mute) 70%, transparent);
+  }
+  .mk-footer__credit-link {
+    background: linear-gradient(90deg, #a855f7, #3b82f6, #a855f7);
+    background-size: 200%;
+    background-position: 0%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: underline;
+    text-decoration-color: #7c3aed55;
+    text-underline-offset: 2px;
+    transition: background-position 400ms var(--ease-mk);
+  }
+  .mk-footer__credit-link:hover { background-position: 100%; }
+  .mk-footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-mk-cream);
+    transition: color 200ms var(--ease-mk);
+  }
+  .mk-footer__top:hover { color: var(--color-mk-gold); }
+</style>

@@ -1,0 +1,200 @@
+---
+/**
+ * Hero / Home section.
+ *  - 100svh (mobile chrome safe), centered logo lockup.
+ *  - The lockup PNG (rendered to transparent) contains the monogram, the
+ *    "CASA MOKADOR" wordmark, the green/red flag stripes, and the
+ *    "CAFÉ BAR · PAFOS" subtitle — i.e. the official brand mark.
+ *  - Subtle radial glow + circular watermark ring add depth without
+ *    competing with the lockup.
+ *  - Entrance stagger via .mk-reveal with --i indexing.
+ */
+---
+
+<section id="home" class="mk-hero" aria-label="Casa Mokador">
+
+  <!-- Backdrop layers: warmth without competing with the lockup -->
+  <div class="mk-hero__glow" aria-hidden="true"></div>
+  <div class="mk-hero__ring" aria-hidden="true"></div>
+
+  <div class="mk-hero__inner mk-container">
+
+    <h1 class="mk-hero__lockup mk-reveal" style="--i:0">
+      <picture>
+        <source srcset="/brand/logo-lockup-transparent.webp" type="image/webp" />
+        <img
+          src="/brand/logo-lockup-transparent.png"
+          alt="Casa Mokador — Café Bar · Pafos"
+          width="1024"
+          height="1024"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+    </h1>
+
+    <p class="mk-hero__tagline mk-reveal" style="--i:2">
+      Italian coffee culture, slowly poured.
+    </p>
+
+    <a href="#gallery" class="mk-hero__scroll mk-reveal" style="--i:3" aria-label="Scroll to gallery">
+      <span class="mk-hero__scroll-label">Scroll</span>
+      <span class="mk-hero__scroll-line" aria-hidden="true"></span>
+      <svg class="mk-hero__scroll-chevron" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+        <path d="M6 9 L12 15 L18 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+  </div>
+</section>
+
+<style>
+  .mk-hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Soft radial glow centered slightly above middle */
+  .mk-hero__glow {
+    position: absolute;
+    inset: -10% -10% 0 -10%;
+    background:
+      radial-gradient(
+        ellipse 70% 55% at 50% 42%,
+        color-mix(in oklab, var(--color-mk-gold) 13%, transparent) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 120% 80% at 50% 100%,
+        var(--color-mk-black) 0%,
+        transparent 70%
+      );
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Faint circular ring behind the lockup — a watermark, never asserts itself */
+  .mk-hero__ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    width: min(92vw, 720px);
+    aspect-ratio: 1 / 1;
+    border: 1px solid color-mix(in oklab, var(--color-mk-gold) 10%, transparent);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .mk-hero__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-block: clamp(3rem, 9vh, 6rem);
+    gap: clamp(2rem, 6vh, 3.5rem);
+    width: 100%;
+  }
+
+  /* The lockup is the entire brand mark — wordmark + subtitle live inside the image */
+  .mk-hero__lockup {
+    margin: 0;
+    width: clamp(280px, 50vw, 520px);
+    aspect-ratio: 1 / 1;
+    position: relative;
+    /* h1 reset for the image-only mark */
+    font-size: 0;
+    line-height: 0;
+  }
+  .mk-hero__lockup picture,
+  .mk-hero__lockup img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .mk-hero__lockup img {
+    /* Slow metallic shimmer via filter — applies to the gold artwork */
+    animation: mk-shimmer 9s var(--ease-mk) infinite;
+  }
+  @keyframes mk-shimmer {
+    0%, 100% {
+      filter:
+        drop-shadow(0 0 26px color-mix(in oklab, var(--color-mk-gold) 10%, transparent))
+        drop-shadow(0 0 0 color-mix(in oklab, var(--color-mk-gold) 0%, transparent));
+    }
+    50% {
+      filter:
+        drop-shadow(0 0 36px color-mix(in oklab, var(--color-mk-gold) 22%, transparent))
+        drop-shadow(0 0 4px color-mix(in oklab, var(--color-mk-gold-light) 14%, transparent));
+    }
+  }
+
+  .mk-hero__tagline {
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-mk-cream-mute);
+    font-size: clamp(15px, 1.2vw, 17px);
+    margin: 0;
+    max-width: 34ch;
+    line-height: 1.55;
+    letter-spacing: 0.005em;
+    /* Small breathing room between lockup and tagline */
+    margin-top: clamp(-0.5rem, -2vh, -1.5rem);
+  }
+
+  /* Scroll indicator — vertical thin line + chevron + label */
+  .mk-hero__scroll {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--color-mk-cream-mute);
+    transition: color 240ms var(--ease-mk);
+    padding: 0.5rem 0.75rem;
+    margin-top: clamp(0.5rem, 2vh, 1rem);
+  }
+  .mk-hero__scroll:hover { color: var(--color-mk-gold); }
+  .mk-hero__scroll-label {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 11px;
+  }
+  .mk-hero__scroll-line {
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(to bottom, transparent, currentColor);
+    animation: mk-scroll-line 2.4s var(--ease-mk) infinite;
+    transform-origin: top;
+  }
+  @keyframes mk-scroll-line {
+    0%      { transform: scaleY(0); opacity: 0; }
+    30%     { transform: scaleY(1); opacity: 1; }
+    100%    { transform: scaleY(1) translateY(8px); opacity: 0; }
+  }
+  .mk-hero__scroll-chevron {
+    animation: mk-bob 2.4s var(--ease-mk) infinite;
+  }
+  @keyframes mk-bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(3px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mk-hero__lockup img,
+    .mk-hero__scroll-line,
+    .mk-hero__scroll-chevron {
+      animation: none !important;
+    }
+  }
+</style>

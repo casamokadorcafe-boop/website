@@ -1,0 +1,632 @@
+---
+/**
+ * Gallery — horizontal scroll-snap carousel.
+ *  - Desktop: mouse-drag scrolling, hover-arrow nav, parallax inside each item.
+ *  - Mobile: native swipe, snap-stop, progress indicator.
+ *  - Click an item to open the lightbox (focus-trapped, Esc + arrow keys).
+ */
+import { GALLERY } from '../data/gallery';
+---
+
+<section id="gallery" class="mk-gallery" aria-label="Gallery">
+
+  <header class="mk-gallery__header mk-container">
+    <p class="mk-eyebrow mk-flag mk-reveal">Inside Casa Mokador</p>
+    <h2 class="mk-gallery__title font-display mk-reveal" style="--i:1">
+      <span class="mk-gold-metallic">A few moments</span>
+    </h2>
+    <p class="mk-gallery__lede mk-reveal" style="--i:2">
+      The bar, the light, the small rituals of an Italian café in Pafos.
+    </p>
+  </header>
+
+  <div class="mk-gallery__scroller-wrap">
+
+    <button class="mk-gallery__arrow mk-gallery__arrow--prev" type="button" aria-label="Previous image" data-dir="-1">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M15 6 L9 12 L15 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div
+      id="mk-gallery-scroller"
+      class="mk-gallery__scroller mk-snap-x mk-no-scrollbar"
+      role="region"
+      aria-label="Gallery — drag or swipe to scroll"
+      tabindex="0"
+    >
+      <!-- Edge spacer so first item can center under snap -->
+      <div class="mk-gallery__spacer" aria-hidden="true"></div>
+
+      {GALLERY.map((item, i) => (
+        <figure
+          class={`mk-gallery__item mk-snap-item mk-gallery__item--${item.shape}`}
+          data-index={i}
+          tabindex="0"
+          role="button"
+          aria-label={`Open ${item.alt}`}
+        >
+          <div class="mk-gallery__media">
+            <img
+              src={item.src}
+              alt={item.alt}
+              loading={i < 2 ? 'eager' : 'lazy'}
+              decoding="async"
+              draggable="false"
+            />
+            <div class="mk-gallery__media-glow" aria-hidden="true"></div>
+          </div>
+          <figcaption class="mk-gallery__caption">
+            <span class="mk-gallery__num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="mk-gallery__cap-text">{item.caption}</span>
+          </figcaption>
+        </figure>
+      ))}
+
+      <div class="mk-gallery__spacer" aria-hidden="true"></div>
+    </div>
+
+    <button class="mk-gallery__arrow mk-gallery__arrow--next" type="button" aria-label="Next image" data-dir="1">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+  </div>
+
+  <div class="mk-gallery__progress mk-container" aria-hidden="true">
+    <span class="mk-gallery__progress-bar"><span class="mk-gallery__progress-fill"></span></span>
+    <span class="mk-gallery__progress-meta"><span id="mk-gallery-current">01</span> · <span>{String(GALLERY.length).padStart(2, '0')}</span></span>
+  </div>
+
+</section>
+
+<!-- Lightbox modal (single, reused for all items) -->
+<dialog id="mk-lightbox" class="mk-lightbox" aria-label="Gallery image">
+  <button class="mk-lightbox__close" type="button" aria-label="Close gallery view">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <button class="mk-lightbox__nav mk-lightbox__nav--prev" type="button" aria-label="Previous image">
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+      <path d="M15 6 L9 12 L15 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <figure class="mk-lightbox__figure">
+    <img id="mk-lightbox-img" alt="" />
+    <figcaption id="mk-lightbox-cap" class="mk-lightbox__caption"></figcaption>
+  </figure>
+
+  <button class="mk-lightbox__nav mk-lightbox__nav--next" type="button" aria-label="Next image">
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+      <path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</dialog>
+
+<style>
+  .mk-gallery {
+    padding-block: clamp(5rem, 12vh, 9rem);
+    position: relative;
+  }
+
+  /* Header */
+  .mk-gallery__header {
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 6vh, 4rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .mk-gallery__title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.05;
+    margin: 0;
+  }
+  .mk-gallery__lede {
+    color: var(--color-mk-cream-mute);
+    max-width: 44ch;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: 0.005em;
+  }
+
+  /* Scroller layout */
+  .mk-gallery__scroller-wrap {
+    position: relative;
+  }
+  .mk-gallery__scroller {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block: 1rem;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .mk-gallery__scroller.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+  }
+  .mk-gallery__scroller:focus-visible {
+    outline: 2px solid var(--color-mk-gold);
+    outline-offset: 4px;
+  }
+
+  /* Spacer so first/last items can centre cleanly under snap-padding */
+  .mk-gallery__spacer {
+    flex: 0 0 max(1.25rem, calc((100vw - var(--container-mk)) / 2 + 1.25rem));
+    align-self: stretch;
+  }
+
+  /* Items */
+  .mk-gallery__item {
+    flex: 0 0 auto;
+    margin: 0;
+    position: relative;
+    cursor: zoom-in;
+    transition: transform 420ms var(--ease-mk);
+  }
+  .mk-gallery__item--tall  { width: clamp(240px, 28vw, 380px); }
+  .mk-gallery__item--wide  { width: clamp(320px, 42vw, 580px); }
+  .mk-gallery__item--square { width: clamp(280px, 32vw, 440px); }
+
+  .mk-gallery__media {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in oklab, var(--color-mk-gold) 14%, transparent);
+    background: var(--color-mk-black-soft);
+    box-shadow:
+      0 1px 0 color-mix(in oklab, var(--color-mk-gold) 10%, transparent) inset,
+      0 18px 40px -28px rgba(0,0,0,0.7);
+    transition: border-color 360ms var(--ease-mk), box-shadow 360ms var(--ease-mk), transform 360ms var(--ease-mk);
+  }
+
+  .mk-gallery__item--tall  .mk-gallery__media { aspect-ratio: 4 / 5; }
+  .mk-gallery__item--wide  .mk-gallery__media { aspect-ratio: 3 / 2; }
+  .mk-gallery__item--square .mk-gallery__media { aspect-ratio: 1 / 1; }
+
+  .mk-gallery__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.06);
+    transition: transform 700ms var(--ease-mk);
+    pointer-events: none;
+  }
+
+  /* Parallax (scroll-driven), modern browsers only — degrades to static scale */
+  @supports (animation-timeline: view()) {
+    .mk-gallery__media img {
+      animation: mk-parallax linear both;
+      animation-timeline: view(inline);
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes mk-parallax {
+      from { transform: scale(1.12) translateX(5%); }
+      to   { transform: scale(1.12) translateX(-5%); }
+    }
+  }
+
+  /* Subtle gold ring + offset shadow on hover (per brief §4.2) */
+  .mk-gallery__item:hover .mk-gallery__media,
+  .mk-gallery__item:focus-visible .mk-gallery__media {
+    border-color: var(--color-mk-gold);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-mk-gold) 40%, transparent),
+      2px 4px 0 color-mix(in oklab, var(--color-mk-gold) 28%, transparent),
+      0 30px 60px -32px rgba(0,0,0,0.8);
+  }
+  .mk-gallery__item:hover .mk-gallery__media img {
+    transform: scale(1.02);
+  }
+
+  .mk-gallery__media-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.25) 100%);
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+  }
+
+  /* Caption — number + descriptor */
+  .mk-gallery__caption {
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+    margin-top: 0.875rem;
+    padding-inline: 0.125rem;
+  }
+  .mk-gallery__num {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--color-mk-gold);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .mk-gallery__cap-text {
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-mk-cream-mute);
+    font-size: 14px;
+    letter-spacing: 0.005em;
+  }
+
+  /* Arrow buttons — desktop only */
+  .mk-gallery__arrow {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(calc(-50% - 0.75rem));
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in oklab, var(--color-mk-black) 70%, transparent);
+    backdrop-filter: blur(8px);
+    border: 1px solid color-mix(in oklab, var(--color-mk-gold) 35%, transparent);
+    color: var(--color-mk-gold);
+    cursor: pointer;
+    transition: background-color 240ms var(--ease-mk), transform 240ms var(--ease-mk), border-color 240ms var(--ease-mk);
+  }
+  .mk-gallery__arrow:hover {
+    background: var(--color-mk-gold);
+    color: var(--color-mk-black);
+    border-color: var(--color-mk-gold);
+  }
+  .mk-gallery__arrow--prev { left: clamp(0.5rem, 2vw, 1.5rem); }
+  .mk-gallery__arrow--next { right: clamp(0.5rem, 2vw, 1.5rem); }
+  @media (min-width: 1024px) {
+    .mk-gallery__arrow { display: inline-flex; }
+  }
+
+  /* Progress indicator */
+  .mk-gallery__progress {
+    margin-top: clamp(1.5rem, 4vh, 2.5rem);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+  }
+  .mk-gallery__progress-bar {
+    position: relative;
+    flex: 0 1 200px;
+    height: 1px;
+    background: color-mix(in oklab, var(--color-mk-cream) 14%, transparent);
+    overflow: hidden;
+  }
+  .mk-gallery__progress-fill {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 12%;
+    background: var(--color-mk-gold);
+    transition: width 280ms var(--ease-mk);
+  }
+  .mk-gallery__progress-meta {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--color-mk-cream-mute);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    min-width: 6ch;
+  }
+
+  /* Lightbox */
+  .mk-lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: clamp(1rem, 4vh, 3rem);
+    border: none;
+    background: color-mix(in oklab, var(--color-mk-black) 96%, transparent);
+    color: var(--color-mk-cream);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .mk-lightbox[open] {
+    display: flex;
+    animation: mk-fade-in 220ms var(--ease-mk);
+  }
+  .mk-lightbox::backdrop {
+    background: transparent;
+  }
+  @keyframes mk-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .mk-lightbox__figure {
+    margin: 0;
+    max-width: min(96vw, 1400px);
+    max-height: min(86vh, 1000px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.875rem;
+  }
+  .mk-lightbox__figure img {
+    max-width: 100%;
+    max-height: 78vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid color-mix(in oklab, var(--color-mk-gold) 30%, transparent);
+  }
+  .mk-lightbox__caption {
+    text-align: center;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--color-mk-cream-mute);
+    font-size: 16px;
+    letter-spacing: 0.005em;
+  }
+  .mk-lightbox__close,
+  .mk-lightbox__nav {
+    position: fixed;
+    background: color-mix(in oklab, var(--color-mk-black) 70%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-mk-gold) 35%, transparent);
+    color: var(--color-mk-gold);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 240ms var(--ease-mk), color 240ms var(--ease-mk), border-color 240ms var(--ease-mk);
+  }
+  .mk-lightbox__close:hover,
+  .mk-lightbox__nav:hover {
+    background: var(--color-mk-gold);
+    color: var(--color-mk-black);
+  }
+  .mk-lightbox__close {
+    top: clamp(1rem, 3vh, 2rem);
+    right: clamp(1rem, 3vw, 2rem);
+    width: 48px;
+    height: 48px;
+  }
+  .mk-lightbox__nav {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px;
+    height: 56px;
+  }
+  .mk-lightbox__nav--prev { left: clamp(1rem, 3vw, 2rem); }
+  .mk-lightbox__nav--next { right: clamp(1rem, 3vw, 2rem); }
+
+  @media (max-width: 640px) {
+    .mk-lightbox__nav {
+      width: 44px;
+      height: 44px;
+      bottom: 1rem;
+      top: auto;
+      transform: none;
+    }
+    .mk-lightbox__nav--prev { left: 1rem; }
+    .mk-lightbox__nav--next { right: 1rem; }
+  }
+</style>
+
+<script>
+  type GalleryEntry = { src: string; alt: string; caption: string };
+
+  const scroller = document.getElementById('mk-gallery-scroller') as HTMLElement | null;
+  const fill = document.querySelector<HTMLElement>('.mk-gallery__progress-fill');
+  const currentEl = document.getElementById('mk-gallery-current');
+  const arrows = document.querySelectorAll<HTMLButtonElement>('.mk-gallery__arrow');
+  const items = scroller?.querySelectorAll<HTMLElement>('.mk-gallery__item') ?? [];
+
+  // Read item data for the lightbox
+  const entries: GalleryEntry[] = [];
+  items.forEach((el) => {
+    const img = el.querySelector('img');
+    const cap = el.querySelector<HTMLElement>('.mk-gallery__cap-text');
+    if (img) {
+      entries.push({
+        src: img.getAttribute('src') ?? '',
+        alt: img.getAttribute('alt') ?? '',
+        caption: cap?.textContent ?? '',
+      });
+    }
+  });
+
+  // --- Scroller behavior ---------------------------------------------
+  if (scroller && items.length > 0) {
+    // Progress + current index update
+    let ticking = false;
+    const update = () => {
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      const ratio = max > 0 ? scroller.scrollLeft / max : 0;
+      if (fill) fill.style.width = `${Math.max(8, ratio * 100)}%`;
+
+      // Determine the item nearest the centre of the scroller
+      const center = scroller.scrollLeft + scroller.clientWidth / 2;
+      let nearest = 0;
+      let dist = Infinity;
+      items.forEach((el, i) => {
+        const mid = el.offsetLeft + el.offsetWidth / 2;
+        const d = Math.abs(mid - center);
+        if (d < dist) { dist = d; nearest = i; }
+      });
+      if (currentEl) currentEl.textContent = String(nearest + 1).padStart(2, '0');
+      ticking = false;
+    };
+    update();
+    scroller.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    // Arrow buttons
+    arrows.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const dir = Number(btn.dataset.dir ?? '1');
+        const step = items[0]?.offsetWidth ?? 320;
+        scroller.scrollBy({ left: dir * (step + 24), behavior: 'smooth' });
+      });
+    });
+
+    // Keyboard nav on scroller (when focused)
+    scroller.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const dir = e.key === 'ArrowRight' ? 1 : -1;
+        const step = items[0]?.offsetWidth ?? 320;
+        scroller.scrollBy({ left: dir * (step + 24), behavior: 'smooth' });
+      }
+    });
+
+    // Mouse-drag scroll (pointer-based, ignores touch — touch uses native scrolling)
+    let dragging = false;
+    let startX = 0;
+    let startScroll = 0;
+    let pointerId = -1;
+    let moved = false;
+
+    scroller.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      dragging = true;
+      moved = false;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startScroll = scroller.scrollLeft;
+      scroller.classList.add('is-dragging');
+      try { scroller.setPointerCapture(pointerId); } catch {}
+    });
+    scroller.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      scroller.scrollLeft = startScroll - dx;
+    });
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      scroller.classList.remove('is-dragging');
+      try { scroller.releasePointerCapture(pointerId); } catch {}
+      // Snap to nearest item: jump triggers scroll-snap to take over
+      const step = items[0]?.offsetWidth ?? 320;
+      const idx = Math.round(scroller.scrollLeft / (step + 24));
+      const target = items[Math.max(0, Math.min(items.length - 1, idx))];
+      if (target) {
+        scroller.scrollTo({
+          left: target.offsetLeft - (scroller.clientWidth - target.offsetWidth) / 2,
+          behavior: 'smooth',
+        });
+      }
+    };
+    scroller.addEventListener('pointerup', endDrag);
+    scroller.addEventListener('pointercancel', endDrag);
+    scroller.addEventListener('pointerleave', endDrag);
+
+    // Suppress click after a drag
+    scroller.addEventListener('click', (e) => {
+      if (moved) {
+        e.stopPropagation();
+        e.preventDefault();
+        moved = false;
+      }
+    }, true);
+  }
+
+  // --- Lightbox -------------------------------------------------------
+  const lightbox = document.getElementById('mk-lightbox') as HTMLDialogElement | null;
+  const lbImg = document.getElementById('mk-lightbox-img') as HTMLImageElement | null;
+  const lbCap = document.getElementById('mk-lightbox-cap') as HTMLElement | null;
+  const lbClose = lightbox?.querySelector<HTMLButtonElement>('.mk-lightbox__close');
+  const lbPrev = lightbox?.querySelector<HTMLButtonElement>('.mk-lightbox__nav--prev');
+  const lbNext = lightbox?.querySelector<HTMLButtonElement>('.mk-lightbox__nav--next');
+
+  let activeIndex = 0;
+  let lastFocus: HTMLElement | null = null;
+
+  const show = (i: number) => {
+    if (!lightbox || !lbImg || !lbCap || entries.length === 0) return;
+    activeIndex = (i + entries.length) % entries.length;
+    const e = entries[activeIndex];
+    lbImg.setAttribute('src', e.src);
+    lbImg.setAttribute('alt', e.alt);
+    lbCap.textContent = e.caption;
+  };
+
+  const open = (i: number) => {
+    if (!lightbox) return;
+    lastFocus = document.activeElement as HTMLElement;
+    show(i);
+    if (typeof lightbox.showModal === 'function') lightbox.showModal();
+    else lightbox.setAttribute('open', '');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => lbClose?.focus(), 50);
+  };
+
+  const close = () => {
+    if (!lightbox) return;
+    if (typeof lightbox.close === 'function') lightbox.close();
+    else lightbox.removeAttribute('open');
+    document.body.style.overflow = '';
+    if (lastFocus) lastFocus.focus();
+  };
+
+  // Wire up item clicks
+  items.forEach((el, i) => {
+    el.addEventListener('click', () => open(i));
+    el.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        open(i);
+      }
+    });
+  });
+
+  lbClose?.addEventListener('click', close);
+  lbPrev?.addEventListener('click', () => show(activeIndex - 1));
+  lbNext?.addEventListener('click', () => show(activeIndex + 1));
+
+  // Click on backdrop closes
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) close();
+  });
+
+  // Keyboard: Esc + arrows
+  lightbox?.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); close(); }
+    if (e.key === 'ArrowRight') show(activeIndex + 1);
+    if (e.key === 'ArrowLeft')  show(activeIndex - 1);
+  });
+
+  // Focus trap inside the lightbox while open
+  lightbox?.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusable = lightbox.querySelectorAll<HTMLElement>('button, [tabindex]:not([tabindex="-1"])');
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+</script>

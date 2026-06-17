@@ -1,0 +1,146 @@
+---
+/**
+ * About — short, warm, no clichés.
+ *  - Two paragraphs flanking a single gold pull-quote ("Benvenuti.").
+ *  - Soft blurred backdrop at low opacity, doesn't compete with the type.
+ */
+---
+
+<section id="about" class="mk-about" aria-label="About Casa Mokador">
+
+  <div class="mk-about__bg" aria-hidden="true"></div>
+
+  <div class="mk-about__inner mk-container">
+
+    <header class="mk-about__header">
+      <p class="mk-eyebrow mk-flag mk-reveal">About</p>
+      <h2 class="mk-about__title font-display mk-reveal" style="--i:1">
+        <span class="mk-gold-metallic">Italian Café - Bar</span><br/>
+        <span class="mk-about__title-it">in Paphos.</span>
+      </h2>
+    </header>
+
+    <div class="mk-about__body">
+
+      <p class="mk-about__p mk-reveal" style="--i:2">
+        Casa Mokador is where the slow rhythm of an Italian café meets the
+        Cyprus afternoon. The beans travel from <em>Brazil</em>, <em>Colombia</em>, and
+        <em>Costa Rica</em> through Mokador’s roastery in Italy, and arrive in
+        Pafos as a single, careful espresso pour.
+      </p>
+
+      <blockquote class="mk-about__quote font-display mk-reveal" style="--i:3">
+        <span class="mk-gold-metallic">Benvenuti.</span>
+      </blockquote>
+
+      <p class="mk-about__p mk-reveal" style="--i:4">
+        We serve coffee the way it’s meant to be — <em>standing at the bar</em>,
+        <em>sitting in the sun</em>, or <em>unwound over an e-hookah in the evening</em>.
+        Stay as long as the day asks you to.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<style>
+  .mk-about {
+    position: relative;
+    padding-block: clamp(5rem, 14vh, 10rem);
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  /* Soft blurred backdrop — a warm radial glow, never an image. */
+  .mk-about__bg {
+    position: absolute;
+    inset: -10%;
+    z-index: -1;
+    background:
+      radial-gradient(
+        ellipse 60% 50% at 25% 30%,
+        color-mix(in oklab, var(--color-mk-gold) 9%, transparent) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 70% 60% at 80% 70%,
+        color-mix(in oklab, var(--color-mk-it-red) 4%, transparent) 0%,
+        transparent 70%
+      );
+    filter: blur(20px);
+  }
+
+  .mk-about__inner {
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(2rem, 5vh, 3rem);
+  }
+
+  .mk-about__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .mk-about__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    margin: 0;
+  }
+  .mk-about__title-it {
+    font-style: italic;
+    color: var(--color-mk-cream);
+  }
+
+  .mk-about__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.5rem, 4vh, 2.5rem);
+    max-width: 60ch;
+  }
+  .mk-about__p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--color-mk-cream);
+    font-size: 17px;
+    line-height: 1.7;
+    letter-spacing: 0;
+  }
+  .mk-about__p em {
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-mk-gold);
+    letter-spacing: 0;
+  }
+
+  /* Pull-quote — Marcellus is opt-in via .font-display on the element. */
+  .mk-about__quote {
+    margin: 0;
+    font-style: italic;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    position: relative;
+    padding-inline: clamp(2rem, 6vw, 4rem);
+  }
+  .mk-about__quote::before,
+  .mk-about__quote::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: clamp(20px, 4vw, 40px);
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-mk-gold), transparent);
+    opacity: 0.7;
+  }
+  .mk-about__quote::before { left: 0; transform: translateY(-50%); }
+  .mk-about__quote::after { right: 0; transform: translateY(-50%); }
+</style>
