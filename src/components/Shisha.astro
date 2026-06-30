@@ -2,9 +2,9 @@
 /**
  * Shisha & E-Hookah — featured offering, editorial layout.
  *
- *  - Desktop (≥1024px): asymmetric 55/45 grid — copy on the left, image
- *    cluster on the right.
- *  - Mobile: copy stacks above images.
+ *  - Desktop (≥1024px): asymmetric 55/45 grid — copy on the left, a single
+ *    editorial photo on the right.
+ *  - Mobile: copy stacks above the photo.
  *  - Section background is --color-mk-black-soft for a slight lounge
  *    mood shift from the rest of the page.
  *  - Flavour menu sits below the editorial layout. Six placeholder rows;
@@ -17,16 +17,6 @@ const IMAGES = [
     src: '/shisha/ehookah.JPG',
     alt: 'The lounge in low evening light, with warm amber tones',
     variant: 'hero',
-  },
-  {
-    src: '/shisha/shisha-02.svg',
-    alt: 'A close-up of a sleek electronic hookah device',
-    variant: 'square',
-  },
-  {
-    src: '/shisha/shisha-03.svg',
-    alt: 'A close-up of a traditional e-hookah device',
-    variant: 'square',
   },
 ] as const;
 ---
@@ -200,16 +190,8 @@ const IMAGES = [
   .mk-shisha__cluster {
     display: grid;
     gap: clamp(0.625rem, 1vw, 0.875rem);
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    /* Mobile: hero spans both columns, close-ups sit in 2-up below. */
-  }
-  @media (min-width: 1024px) {
-    .mk-shisha__cluster {
-      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-      /* Desktop: hero on the left taking full height,
-         two square close-ups stacked on the right. */
-    }
+    grid-template-columns: 1fr;
+    /* Single editorial photo filling the column. */
   }
 
   .mk-shisha__tile {
@@ -243,39 +225,14 @@ const IMAGES = [
     transform: scale(1.05);
   }
 
-  /* Tile variants. Mobile: hero spans both columns, others size by aspect. */
+  /* Single editorial photo — portrait on every breakpoint. */
   .mk-shisha__tile--hero {
     grid-column: 1 / -1;
     aspect-ratio: 4 / 5;
   }
-  .mk-shisha__tile--square {
-    aspect-ratio: 1 / 1;
-  }
-  /* Optional 4th wide tile spans the full cluster width on every breakpoint */
-  .mk-shisha__tile--wide {
-    grid-column: 1 / -1;
-    aspect-ratio: 16 / 9;
-  }
   @media (min-width: 1024px) {
     .mk-shisha__tile--hero {
-      grid-column: 1;
-      grid-row: 1 / span 2;
-      aspect-ratio: auto;
-      height: 100%;
       min-height: 520px;
-    }
-    .mk-shisha__tile--square:nth-of-type(2) {
-      grid-column: 2;
-      grid-row: 1;
-    }
-    .mk-shisha__tile--square:nth-of-type(3) {
-      grid-column: 2;
-      grid-row: 2;
-    }
-    /* When a 4th wide tile is present, it sits on row 3 spanning both columns */
-    .mk-shisha__tile--wide {
-      grid-column: 1 / -1;
-      grid-row: 3;
     }
   }
 
